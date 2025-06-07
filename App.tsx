@@ -238,6 +238,14 @@ const TaskTracker: React.FC = () => {
           <Text style={styles.buttonText}>➕ Add Task</Text>
         </TouchableOpacity>
 
+        <Text style={[styles.badge, styles.badgeInfo, { marginBottom: 10 }]}>
+          Total Tracked: {formatDuration(getTotalTrackedTime())}
+        </Text>
+
+        <Text style={[styles.badge, styles.badgeWarning, { marginBottom: 10 }]}>
+          Idle Time: {formatDuration(getTotalIdleTime())}
+        </Text>
+
         {tasks.map(task => {
           const active = isActive(task);
           const durationMs = getDuration(task.intervals);
@@ -387,6 +395,24 @@ const styles = StyleSheet.create({
   badgeNormal: {
     backgroundColor: '#0dcaf0',
     color: '#000',
+  },
+
+  badgeInfo: {
+    backgroundColor: '#0dcaf0',
+    color: '#000',
+    marginLeft: 8,
+  },
+  badgeWarning: {
+    backgroundColor: '#ffc107',
+    color: '#000',
+    marginLeft: 8,
+  },
+  badge: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    fontWeight: 'bold',
+    overflow: 'hidden',
   },
 });
 
