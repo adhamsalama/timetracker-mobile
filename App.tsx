@@ -258,11 +258,30 @@ const TaskTracker: React.FC = () => {
 
         <Text style={{ fontSize: 18, marginVertical: 16 }}>📊 Timeline</Text>
         {getTimeline().map((item, i) => (
-          <View key={i} style={styles.timelineItem}>
-            <Text>{item.taskName}</Text>
-            <Text>{new Date(item.start).toLocaleTimeString()} – {new Date(item.end).toLocaleTimeString()}</Text>
-            <Text>{formatDuration(item.end - item.start)}</Text>
-          </View>
+          <TouchableOpacity
+            key={i}
+            style={[styles.timelineItem, item.isIdle ? styles.timelineIdle : styles.timelineActive]}
+            onPress={() => {
+              const task = tasks.find(t => t.name === item.taskName);
+              if (task) toggleTask(task.id);
+            }}
+          >
+            <View>
+              <Text style={{ fontWeight: 'bold' }}>{item.taskName}</Text>
+              <Text style={{ fontSize: 12 }}>
+                {new Date(item.start).toLocaleTimeString()} – {new Date(item.end).toLocaleTimeString()}
+              </Text>
+            </View>
+            <Text
+              style={[styles.timelineBadge, item.isIdle
+                ? styles.badgeIdle
+                : item.exceeded
+                  ? styles.badgeExceeded
+                  : styles.badgeNormal]}
+            >
+              {formatDuration(item.end - item.start)}
+            </Text>
+          </TouchableOpacity>
         ))}
       </ScrollView>
 
@@ -340,7 +359,34 @@ const styles = StyleSheet.create({
     borderLeftWidth: 4, borderLeftColor: 'red',
   },
   timelineItem: {
-    marginBottom: 10,
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    padding: 10, backgroundColor: '#fff', borderRadius: 8, marginBottom: 8,
+    borderWidth: 1, borderColor: '#ccc',
+  },
+  timelineActive: {
+    borderLeftWidth: 4, borderLeftColor: '#0dcaf0',
+  },
+  timelineIdle: {
+    borderLeftWidth: 4, borderLeftColor: '#ffc107',
+  },
+  timelineBadge: {
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+    fontWeight: 'bold',
+    overflow: 'hidden',
+  },
+  badgeIdle: {
+    backgroundColor: '#ffc107',
+    color: '#000',
+  },
+  badgeExceeded: {
+    backgroundColor: '#dc3545',
+    color: '#fff',
+  },
+  badgeNormal: {
+    backgroundColor: '#0dcaf0',
+    color: '#000',
   },
 });
 
