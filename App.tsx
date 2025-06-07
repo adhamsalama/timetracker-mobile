@@ -45,6 +45,13 @@ const TaskTracker: React.FC = () => {
   const [newTaskName, setNewTaskName] = useState('');
   const [estimatedMinutes, setEstimatedMinutes] = useState('');
 
+  const clearDayTasks = () => {
+    setTaskData(prev => ({
+      ...prev,
+      [selectedDate]: [],
+    }));
+  };
+  const [isAutoIdleDisabled, setIsAutoIdleDisabled] = useState(false);
   useEffect(() => {
     AsyncStorage.getItem('taskData').then(stored => {
       if (stored) {
@@ -142,10 +149,9 @@ const TaskTracker: React.FC = () => {
 
       const idleLast = idleTask.intervals[idleTask.intervals.length - 1];
       const isIdleRunning = idleLast && !idleLast.end;
-
       if (isIdleRunning && toggledActive) {
         idleTask.intervals[idleTask.intervals.length - 1].end = nowTime;
-      } else if (!isIdleRunning && !toggledActive && !newTasks.some(t => {
+      } else if (!isIdleRunning && !toggledActive && !isAutoIdleDisabled && !newTasks.some(t => {
         const last = t.intervals[t.intervals.length - 1];
         return last && !last.end && t.id !== IDLE_TASK_ID;
       })) {
@@ -250,8 +256,17 @@ const TaskTracker: React.FC = () => {
           <Text style={styles.buttonText}>➕ Add Task</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity onPress={() => {
+          setIsAutoIdleDisabled(!isAutoIdleDisabled)
+        }} style={styles.button}>
+          <Text style={styles.buttonText}>Auto Idle tracking: {isAutoIdleDisabled ? "No" : "Yes"}</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={showDatepicker} style={[styles.button, { marginBottom: 16 }]}>
           <Text style={styles.buttonText}>📅 {selectedDate}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={clearDayTasks} style={[styles.button, { backgroundColor: '#dc3545' }]}>
+          <Text style={styles.buttonText}>🗑️ Clear Day</Text>
         </TouchableOpacity>
 
         <Text style={[styles.badge, styles.badgeInfo, { marginBottom: 10 }]}>
