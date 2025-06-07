@@ -8,10 +8,10 @@ import {
   ScrollView,
   Modal,
   StyleSheet,
-  Platform,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { DateTimePickerAndroid, } from '@react-native-community/datetimepicker';
 interface Interval {
   start: number;
   end?: number;
@@ -36,10 +36,10 @@ interface TimelineEntry {
 
 const IDLE_TASK_ID = '__idle__';
 const getTodayDate = () => new Date().toISOString().split('T')[0];
-
+const todayDate = getTodayDate();
 const TaskTracker: React.FC = () => {
   const [taskData, setTaskData] = useState<DailyTasks>({});
-  const [selectedDate, setSelectedDate] = useState(getTodayDate());
+  const [selectedDate, setSelectedDate] = useState(todayDate);
   const [now, setNow] = useState(Date.now());
   const [modalVisible, setModalVisible] = useState(false);
   const [newTaskName, setNewTaskName] = useState('');
@@ -227,6 +227,18 @@ const TaskTracker: React.FC = () => {
     return idleTask ? getDuration(idleTask.intervals) : 0;
   };
 
+  const showDatepicker = () => {
+    DateTimePickerAndroid.open({
+      value: new Date(selectedDate),
+      mode: 'date',
+      is24Hour: true,
+      onChange: (_, date) => {
+        if (date) {
+          setSelectedDate(date.toISOString().split('T')[0]);
+        }
+      },
+    });
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ padding: 16 }}>
@@ -236,6 +248,10 @@ const TaskTracker: React.FC = () => {
 
         <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.button}>
           <Text style={styles.buttonText}>➕ Add Task</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={showDatepicker} style={[styles.button, { marginBottom: 16 }]}>
+          <Text style={styles.buttonText}>📅 {selectedDate}</Text>
         </TouchableOpacity>
 
         <Text style={[styles.badge, styles.badgeInfo, { marginBottom: 10 }]}>
