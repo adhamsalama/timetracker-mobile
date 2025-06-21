@@ -307,13 +307,9 @@ const TaskTracker: React.FC = () => {
 
         <Text style={{ fontSize: 18, marginVertical: 16 }}>📊 Timeline</Text>
         {getTimeline().map((item, i) => (
-          <TouchableOpacity
+          <View
             key={i}
             style={[styles.timelineItem, item.isIdle ? styles.timelineIdle : styles.timelineActive]}
-            onPress={() => {
-              const task = tasks.find(t => t.name === item.taskName);
-              if (task) toggleTask(task.id);
-            }}
           >
             <View>
               <Text style={{ fontWeight: 'bold' }}>{item.taskName}</Text>
@@ -330,7 +326,7 @@ const TaskTracker: React.FC = () => {
             >
               {formatDuration(item.end - item.start)}
             </Text>
-          </TouchableOpacity>
+          </View>
         ))}
       </ScrollView>
 
