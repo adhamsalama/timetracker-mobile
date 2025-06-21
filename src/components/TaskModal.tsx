@@ -58,12 +58,14 @@ const TaskModal: React.FC<TaskModalProps> = ({ visible, onClose, onAddTask }) =>
           <Text style={styles.modalTitle}>New Task</Text>
           <TextInput
             placeholder="Task name"
+            placeholderTextColor={'#888'}
             value={newTaskName}
             onChangeText={setNewTaskName}
             style={styles.input}
           />
           <TextInput
             placeholder="Estimated minutes"
+            placeholderTextColor={'#888'}
             value={estimatedMinutes}
             onChangeText={setEstimatedMinutes}
             keyboardType="numeric"
@@ -73,6 +75,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ visible, onClose, onAddTask }) =>
           <View style={{ flexDirection: 'row', marginBottom: 10 }}>
             <TextInput
               placeholder="Add tag"
+              placeholderTextColor={'#888'}
               value={tagInput}
               onChangeText={setTagInput}
               style={[styles.input, { flex: 1, marginRight: 10, marginBottom: 0 }]}
