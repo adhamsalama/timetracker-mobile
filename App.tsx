@@ -248,39 +248,53 @@ const TaskTracker: React.FC = () => {
       },
     });
   };
+
+  const [showControls, setShowControls] = useState(true);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 50 }}>
+
         <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 16 }}>
           🕒 Task Time Tracker
         </Text>
 
-        <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.button}>
-          <Text style={styles.buttonText}>➕ Add Task</Text>
+        <TouchableOpacity
+          onPress={() => setShowControls(!showControls)}
+          style={[styles.button, { backgroundColor: '#6c757d' }]}
+        >
+          <Text style={styles.buttonText}>
+            {showControls ? '🙈 Hide Controls' : '👀 Show Controls'}
+          </Text>
         </TouchableOpacity>
+        {showControls && (
+          <>
+            <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.button}>
+              <Text style={styles.buttonText}>➕ Add Task</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => {
-          setIsAutoIdleDisabled(!isAutoIdleDisabled)
-        }} style={styles.button}>
-          <Text style={styles.buttonText}>Auto Idle tracking: {isAutoIdleDisabled ? "No" : "Yes"}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={showDatepicker} style={[styles.button,]}>
-          <Text style={styles.buttonText}>📅 {selectedDate}</Text>
-        </TouchableOpacity>
+            <TouchableOpacity onPress={() => {
+              setIsAutoIdleDisabled(!isAutoIdleDisabled)
+            }} style={styles.button}>
+              <Text style={styles.buttonText}>Auto Idle tracking: {isAutoIdleDisabled ? "No" : "Yes"}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={showDatepicker} style={[styles.button,]}>
+              <Text style={styles.buttonText}>📅 {selectedDate}</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => {
-          Alert.alert(
-            'Confirm',
-            'Are you sure you want to clear the day\'s tasks?',
-            [
-              { text: 'Cancel', style: 'cancel' },
-              { text: 'Yes', style: 'destructive', onPress: clearDayTasks },
-            ]
-          );
-        }} style={[styles.button, { backgroundColor: '#dc3545' }]}>
-          <Text style={styles.buttonText}>🗑️ Clear Day</Text>
-        </TouchableOpacity>
-
+            <TouchableOpacity onPress={() => {
+              Alert.alert(
+                'Confirm',
+                'Are you sure you want to clear the day\'s tasks?',
+                [
+                  { text: 'Cancel', style: 'cancel' },
+                  { text: 'Yes', style: 'destructive', onPress: clearDayTasks },
+                ]
+              );
+            }} style={[styles.button, { backgroundColor: '#dc3545' }]}>
+              <Text style={styles.buttonText}>🗑️ Clear Day</Text>
+            </TouchableOpacity>
+          </>
+        )}
         <Text style={[styles.badge, styles.badgeInfo,]}>
           Total Active Time: {formatDuration(getTotalTrackedTime())}
         </Text>
