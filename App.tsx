@@ -8,6 +8,7 @@ import {
   ScrollView,
   Modal,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -265,7 +266,16 @@ const TaskTracker: React.FC = () => {
           <Text style={styles.buttonText}>📅 {selectedDate}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={clearDayTasks} style={[styles.button, { backgroundColor: '#dc3545' }]}>
+        <TouchableOpacity onPress={() => {
+          Alert.alert(
+            'Confirm',
+            'Are you sure you want to clear the day\'s tasks?',
+            [
+              { text: 'Cancel', style: 'cancel' },
+              { text: 'Yes', style: 'destructive', onPress: clearDayTasks },
+            ]
+          );
+        }} style={[styles.button, { backgroundColor: '#dc3545' }]}>
           <Text style={styles.buttonText}>🗑️ Clear Day</Text>
         </TouchableOpacity>
 
