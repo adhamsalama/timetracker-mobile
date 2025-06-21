@@ -9,6 +9,8 @@ import {
   Modal,
   StyleSheet,
   Alert,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -292,11 +294,25 @@ const TaskTracker: React.FC = () => {
           const durationMs = getDuration(task.intervals);
           const durationMin = durationMs / 60000;
           const exceeded = durationMin > task.estimatedMinutes;
+          const taskStyles: StyleProp<ViewStyle> = [styles.taskCard];
+          if (active && exceeded) {
+            taskStyles.push(styles.exceedingActiveTask);
+          }
+          else if (active) {
+            taskStyles.push(styles.nonExceedingActiveTask);
+          }
+          else if (exceeded) {
+            taskStyles.push(styles.nonActiveTaskExceeded);
+          }
+          else {
+            taskStyles.push(styles.nonActiveTask);
+          }
+
           return (
             <TouchableOpacity
               key={task.id}
               onPress={() => toggleTask(task.id)}
-              style={[styles.taskCard, exceeded ? styles.taskExceeded : active ? styles.taskActive : null]}
+              style={taskStyles}
             >
               <Text style={{ fontWeight: 'bold' }}>{task.name}</Text>
               <Text>{formatDuration(durationMs)} / {task.estimatedMinutes} min</Text>
@@ -397,11 +413,17 @@ const styles = StyleSheet.create({
   taskCard: {
     padding: 12, backgroundColor: '#f0f0f0', borderRadius: 8, marginBottom: 10,
   },
-  taskActive: {
-    borderLeftWidth: 4, borderLeftColor: 'green',
+  nonExceedingActiveTask: {
+    borderWidth: 4, borderColor: 'green',
   },
-  taskExceeded: {
+  exceedingActiveTask: {
+    borderWidth: 4, borderColor: 'red',
+  },
+  nonActiveTaskExceeded: {
     borderLeftWidth: 4, borderLeftColor: 'red',
+  },
+  nonActiveTask: {
+    borderLeftWidth: 4, borderLeftColor: 'green',
   },
   timelineItem: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
