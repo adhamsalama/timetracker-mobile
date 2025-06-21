@@ -8,6 +8,7 @@ export interface Task {
   name: string;
   intervals: Interval[];
   estimatedMinutes: number;
+  tags: string[];
 }
 
 export type DailyTasks = Record<string, Task[]>;

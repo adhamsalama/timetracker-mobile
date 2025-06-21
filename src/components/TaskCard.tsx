@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleProp, ViewStyle } from 'react-native';
+import { TouchableOpacity, Text, StyleProp, ViewStyle, View, ScrollView } from 'react-native';
 import { Task } from '../types';
 import { getDuration, isTaskActive, formatDuration } from '../utils/utils';
 import { styles } from '../styles';
@@ -36,6 +36,31 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, now, onToggle }) => {
       <Text style={{ fontWeight: 'bold' }}>{task.name}</Text>
       <Text>{formatDuration(durationMs)} / {task.estimatedMinutes} min</Text>
       <Text>{active ? 'Active' : 'Paused'}</Text>
+
+      {task.tags && task.tags.length > 0 && (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ marginTop: 8 }}
+        >
+          <View style={{ flexDirection: 'row' }}>
+            {task.tags.map((tag, index) => (
+              <View
+                key={index}
+                style={{
+                  backgroundColor: '#007bff',
+                  paddingHorizontal: 8,
+                  paddingVertical: 4,
+                  borderRadius: 12,
+                  marginRight: 6,
+                }}
+              >
+                <Text style={{ color: 'white', fontSize: 10 }}>{tag}</Text>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+      )}
     </TouchableOpacity>
   );
 };

@@ -68,3 +68,13 @@ export const getTotalIdleTime = (taskData: DailyTasks, selectedDate: string, now
   const idleTask = taskData[selectedDate]?.find(t => t.id === IDLE_TASK_ID);
   return idleTask ? getDuration(idleTask.intervals, now) : 0;
 };
+
+export const getAllTags = (tasks: Task[]): string[] => {
+  const allTags = tasks.flatMap(task => task.tags || []);
+  return [...new Set(allTags)].sort();
+};
+
+export const filterTasksByTag = (tasks: Task[], selectedTag: string | null): Task[] => {
+  if (!selectedTag) return tasks;
+  return tasks.filter(task => task.tags?.includes(selectedTag));
+};

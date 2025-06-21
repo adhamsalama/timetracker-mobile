@@ -5,32 +5,50 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import { styles } from '../styles';
 
 interface TaskModalProps {
   visible: boolean;
   onClose: () => void;
-  onAddTask: (name: string, estimatedMinutes: number) => void;
+  onAddTask: (name: string, estimatedMinutes: number, tags: string[]) => void;
 }
 
 const TaskModal: React.FC<TaskModalProps> = ({ visible, onClose, onAddTask }) => {
   const [newTaskName, setNewTaskName] = useState('');
   const [estimatedMinutes, setEstimatedMinutes] = useState('');
+  const [tagInput, setTagInput] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
 
   const handleAddTask = () => {
     if (!newTaskName || !estimatedMinutes) return;
 
-    onAddTask(newTaskName, Number(estimatedMinutes));
+    onAddTask(newTaskName, Number(estimatedMinutes), tags);
     setNewTaskName('');
     setEstimatedMinutes('');
+    setTagInput('');
+    setTags([]);
     onClose();
   };
 
   const handleClose = () => {
     setNewTaskName('');
     setEstimatedMinutes('');
+    setTagInput('');
+    setTags([]);
     onClose();
+  };
+
+  const addTag = () => {
+    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
+      setTags([...tags, tagInput.trim()]);
+      setTagInput('');
+    }
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setTags(tags.filter(tag => tag !== tagToRemove));
   };
 
   return (
@@ -51,6 +69,47 @@ const TaskModal: React.FC<TaskModalProps> = ({ visible, onClose, onAddTask }) =>
             keyboardType="numeric"
             style={styles.input}
           />
+
+          <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+            <TextInput
+              placeholder="Add tag"
+              value={tagInput}
+              onChangeText={setTagInput}
+              style={[styles.input, { flex: 1, marginRight: 10, marginBottom: 0 }]}
+              onSubmitEditing={addTag}
+            />
+            <TouchableOpacity onPress={addTag} style={[styles.button, { paddingHorizontal: 15 }]}>
+              <Text style={styles.buttonText}>+</Text>
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ maxHeight: 50, marginBottom: 10 }}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              {tags.map((tag, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => removeTag(tag)}
+                  style={{
+                    backgroundColor: '#e0e0e0',
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
+                    borderRadius: 15,
+                    marginRight: 8,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Text style={{ fontSize: 12, marginRight: 5 }}>{tag}</Text>
+                  <Text style={{ fontSize: 12, color: '#666' }}>×</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </ScrollView>
+
           <TouchableOpacity onPress={handleAddTask} style={styles.button}>
             <Text style={styles.buttonText}>Add</Text>
           </TouchableOpacity>

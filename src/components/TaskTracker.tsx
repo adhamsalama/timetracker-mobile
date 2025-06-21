@@ -14,10 +14,12 @@ import {
   getTimeline,
   getTotalTrackedTime,
   getTotalIdleTime,
-  formatDuration
+  formatDuration,
+  getAllTags,
+  filterTasksByTag
 } from '../utils/utils';
 import { styles } from '../styles';
-import { useTaskLogic } from '../hooks/useTasksLogic'
+import { useTaskLogic } from '../hooks/useTasksLogic';
 import TaskModal from './TaskModal';
 import TaskCard from './TaskCard';
 import Timeline from './Timeline';
@@ -27,6 +29,7 @@ const TaskTracker: React.FC = () => {
   const [now, setNow] = useState(Date.now());
   const [modalVisible, setModalVisible] = useState(false);
   const [showControls, setShowControls] = useState(true);
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
   const {
     taskData,
@@ -71,11 +74,13 @@ const TaskTracker: React.FC = () => {
   const timeline = getTimeline(taskData, selectedDate, now);
   const totalTrackedTime = getTotalTrackedTime(tasks, now);
   const totalIdleTime = getTotalIdleTime(taskData, selectedDate, now);
+  const allTags = getAllTags(tasks);
+  const filteredTasks = filterTasksByTag(tasks, selectedTag);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 50 }}>
-        <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 16, textAlign: 'center' }}>
+        <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 16 }}>
           🕒 Task Time Tracker
         </Text>
 
@@ -119,6 +124,55 @@ const TaskTracker: React.FC = () => {
           </>
         )}
 
+        {allTags.length > 0 && (
+          <View style={{ marginVertical: 10 }}>
+            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>Filter by Tag:</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity
+                  onPress={() => setSelectedTag(null)}
+                  style={{
+                    backgroundColor: selectedTag === null ? '#007bff' : '#e0e0e0',
+                    paddingHorizontal: 12,
+                    paddingVertical: 6,
+                    borderRadius: 15,
+                    marginRight: 8,
+                  }}
+                >
+                  <Text style={{
+                    color: selectedTag === null ? 'white' : '#333',
+                    fontSize: 12,
+                    fontWeight: 'bold'
+                  }}>
+                    All
+                  </Text>
+                </TouchableOpacity>
+                {allTags.map((tag, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => setSelectedTag(selectedTag === tag ? null : tag)}
+                    style={{
+                      backgroundColor: selectedTag === tag ? '#007bff' : '#e0e0e0',
+                      paddingHorizontal: 12,
+                      paddingVertical: 6,
+                      borderRadius: 15,
+                      marginRight: 8,
+                    }}
+                  >
+                    <Text style={{
+                      color: selectedTag === tag ? 'white' : '#333',
+                      fontSize: 12,
+                      fontWeight: 'bold'
+                    }}>
+                      {tag}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </ScrollView>
+          </View>
+        )}
+
         <Text style={[styles.badge, styles.badgeInfo]}>
           Total Active Time: {formatDuration(totalTrackedTime)}
         </Text>
@@ -127,7 +181,7 @@ const TaskTracker: React.FC = () => {
           Total Idle Time: {formatDuration(totalIdleTime)}
         </Text>
 
-        {tasks.map(task => (
+        {filteredTasks.map(task => (
           <TaskCard
             key={task.id}
             task={task}

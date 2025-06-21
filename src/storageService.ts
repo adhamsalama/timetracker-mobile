@@ -36,6 +36,7 @@ export const ensureIdleTaskExists = (taskData: DailyTasks, selectedDate: string)
           name: 'Idle',
           intervals: [],
           estimatedMinutes: 0,
+          tags: [],
         },
       ],
     };

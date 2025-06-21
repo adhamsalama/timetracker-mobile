@@ -27,12 +27,13 @@ export const useTaskLogic = (selectedDate: string) => {
     }
   }, [taskData]);
 
-  const addTask = (name: string, estimate: number) => {
+  const addTask = (name: string, estimate: number, tags: string[] = []) => {
     const newTask: Task = {
       id: Date.now().toString(),
       name,
       intervals: [],
       estimatedMinutes: estimate,
+      tags,
     };
 
     setTaskData(prev => ({
