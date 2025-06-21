@@ -16,13 +16,15 @@ import {
   getTotalIdleTime,
   formatDuration,
   getAllTags,
-  filterTasksByTag
+  filterTasksByTag,
+  getTotalTimeForTag
 } from '../utils/utils';
 import { styles } from '../styles';
 import { useTaskLogic } from '../hooks/useTasksLogic';
 import TaskModal from './TaskModal';
 import TaskCard from './TaskCard';
 import Timeline from './Timeline';
+import TagFilter from './TagsFilter';
 
 const TaskTracker: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(getTodayDate());
@@ -76,7 +78,6 @@ const TaskTracker: React.FC = () => {
   const totalIdleTime = getTotalIdleTime(taskData, selectedDate, now);
   const allTags = getAllTags(tasks);
   const filteredTasks = filterTasksByTag(tasks, selectedTag);
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 50 }}>
@@ -124,54 +125,14 @@ const TaskTracker: React.FC = () => {
           </>
         )}
 
-        {allTags.length > 0 && (
-          <View style={{ marginVertical: 10 }}>
-            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>Filter by Tag:</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <TouchableOpacity
-                  onPress={() => setSelectedTag(null)}
-                  style={{
-                    backgroundColor: selectedTag === null ? '#007bff' : '#e0e0e0',
-                    paddingHorizontal: 12,
-                    paddingVertical: 6,
-                    borderRadius: 15,
-                    marginRight: 8,
-                  }}
-                >
-                  <Text style={{
-                    color: selectedTag === null ? 'white' : '#333',
-                    fontSize: 12,
-                    fontWeight: 'bold'
-                  }}>
-                    All
-                  </Text>
-                </TouchableOpacity>
-                {allTags.map((tag, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => setSelectedTag(selectedTag === tag ? null : tag)}
-                    style={{
-                      backgroundColor: selectedTag === tag ? '#007bff' : '#e0e0e0',
-                      paddingHorizontal: 12,
-                      paddingVertical: 6,
-                      borderRadius: 15,
-                      marginRight: 8,
-                    }}
-                  >
-                    <Text style={{
-                      color: selectedTag === tag ? 'white' : '#333',
-                      fontSize: 12,
-                      fontWeight: 'bold'
-                    }}>
-                      {tag}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </ScrollView>
-          </View>
-        )}
+        <TagFilter
+          allTags={allTags}
+          selectedTag={selectedTag}
+          onTagSelect={setSelectedTag}
+          tasks={filteredTasks}
+          now={now}
+          getTotalTimeForTag={getTotalTimeForTag}
+        />
 
         <Text style={[styles.badge, styles.badgeInfo]}>
           Total Active Time: {formatDuration(totalTrackedTime)}

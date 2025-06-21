@@ -78,3 +78,11 @@ export const filterTasksByTag = (tasks: Task[], selectedTag: string | null): Tas
   if (!selectedTag) return tasks;
   return tasks.filter(task => task.tags?.includes(selectedTag));
 };
+
+export const getTotalTimeForTag = (tasks: Task[], tag: string, now: number): number => {
+  const tasksWithTag = tasks.filter(task =>
+    task.tags && task.tags.includes(tag)
+  );
+
+  return getTotalTrackedTime(tasksWithTag, now);
+};
