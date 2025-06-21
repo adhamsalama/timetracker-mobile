@@ -11,7 +11,7 @@ interface TimelineProps {
 const Timeline: React.FC<TimelineProps> = ({ entries }) => {
   return (
     <>
-      <Text style={{ fontSize: 18, marginVertical: 16 }}>📊 Timeline</Text>
+      <Text style={{ fontSize: 18, marginVertical: 16, textAlign: "center" }}>📊 Timeline</Text>
       {entries.map((item, i) => (
         <View
           key={i}

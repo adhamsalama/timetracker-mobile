@@ -25,6 +25,7 @@ import TaskModal from './TaskModal';
 import TaskCard from './TaskCard';
 import Timeline from './Timeline';
 import TagFilter from './TagsFilter';
+import { DailyTasks, Task } from '../types';
 
 const TaskTracker: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(getTodayDate());
@@ -73,15 +74,31 @@ const TaskTracker: React.FC = () => {
     );
   };
 
-  const timeline = getTimeline(taskData, selectedDate, now);
+  const filteredTasks = filterTasksByTag(tasks, selectedTag);
+
+  // Filter the taskData object by tag
+  const filteredTaskData: DailyTasks = selectedTag === null
+    ? taskData
+    : Object.keys(taskData).reduce((acc, date) => {
+      const tasksForDate = taskData[date];
+      const filteredTasksForDate = tasksForDate.filter((task: Task) =>
+        task.tags && task.tags.includes(selectedTag)
+      );
+      if (filteredTasksForDate.length > 0) {
+        acc[date] = filteredTasksForDate;
+      }
+      return acc;
+    }, {} as DailyTasks);
+
+  // Use filtered data for timeline
+  const timeline = getTimeline(filteredTaskData, selectedDate, now);
   const totalTrackedTime = getTotalTrackedTime(tasks, now);
   const totalIdleTime = getTotalIdleTime(taskData, selectedDate, now);
   const allTags = getAllTags(tasks);
-  const filteredTasks = filterTasksByTag(tasks, selectedTag);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 50 }}>
-        <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 16 }}>
+        <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 16, textAlign: "center" }}>
           🕒 Task Time Tracker
         </Text>
 
@@ -122,17 +139,17 @@ const TaskTracker: React.FC = () => {
             >
               <Text style={styles.buttonText}>🗑️ Clear Day</Text>
             </TouchableOpacity>
+
+            <TagFilter
+              allTags={allTags}
+              selectedTag={selectedTag}
+              onTagSelect={setSelectedTag}
+              tasks={tasks} // Pass all tasks for time calculation
+              now={now}
+              getTotalTimeForTag={getTotalTimeForTag}
+            />
           </>
         )}
-
-        <TagFilter
-          allTags={allTags}
-          selectedTag={selectedTag}
-          onTagSelect={setSelectedTag}
-          tasks={filteredTasks}
-          now={now}
-          getTotalTimeForTag={getTotalTimeForTag}
-        />
 
         <Text style={[styles.badge, styles.badgeInfo]}>
           Total Active Time: {formatDuration(totalTrackedTime)}
