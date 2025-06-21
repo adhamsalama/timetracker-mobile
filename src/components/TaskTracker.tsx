@@ -96,7 +96,7 @@ const TaskTracker: React.FC = () => {
   const totalIdleTime = getTotalIdleTime(taskData, selectedDate, now);
   const allTags = getAllTags(tasks);
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f8f9fa' }}>
       <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 50 }}>
         <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 16, textAlign: "center" }}>
           🕒 Task Time Tracker
