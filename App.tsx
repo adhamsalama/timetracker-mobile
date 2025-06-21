@@ -250,7 +250,7 @@ const TaskTracker: React.FC = () => {
   };
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={{ padding: 16 }}>
+      <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 50 }}>
         <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 16 }}>
           🕒 Task Time Tracker
         </Text>
@@ -264,7 +264,7 @@ const TaskTracker: React.FC = () => {
         }} style={styles.button}>
           <Text style={styles.buttonText}>Auto Idle tracking: {isAutoIdleDisabled ? "No" : "Yes"}</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={showDatepicker} style={[styles.button, { marginBottom: 16 }]}>
+        <TouchableOpacity onPress={showDatepicker} style={[styles.button,]}>
           <Text style={styles.buttonText}>📅 {selectedDate}</Text>
         </TouchableOpacity>
 
@@ -281,12 +281,12 @@ const TaskTracker: React.FC = () => {
           <Text style={styles.buttonText}>🗑️ Clear Day</Text>
         </TouchableOpacity>
 
-        <Text style={[styles.badge, styles.badgeInfo, { marginBottom: 10 }]}>
-          Total Tracked: {formatDuration(getTotalTrackedTime())}
+        <Text style={[styles.badge, styles.badgeInfo,]}>
+          Total Active Time: {formatDuration(getTotalTrackedTime())}
         </Text>
 
-        <Text style={[styles.badge, styles.badgeWarning, { marginBottom: 10 }]}>
-          Idle Time: {formatDuration(getTotalIdleTime())}
+        <Text style={[styles.badge, styles.badgeWarning,]}>
+          Total Idle Time: {formatDuration(getTotalIdleTime())}
         </Text>
 
         {tasks.map(task => {
@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#007bff',
     padding: 10,
     borderRadius: 8,
-    marginVertical: 10,
+    marginVertical: 5,
   },
   buttonText: { color: 'white', textAlign: 'center' },
   modalContainer: {
@@ -452,19 +452,19 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   badgeNormal: {
-    backgroundColor: '#0dcaf0',
-    color: '#000',
+    backgroundColor: '#28a745',
+    color: '#fff',
   },
 
   badgeInfo: {
-    backgroundColor: '#0dcaf0',
+    backgroundColor: '#17a2b8',
     color: '#000',
-    marginLeft: 8,
+    textAlign: 'center',
   },
   badgeWarning: {
     backgroundColor: '#ffc107',
     color: '#000',
-    marginLeft: 8,
+    textAlign: 'center',
   },
   badge: {
     paddingVertical: 6,
@@ -472,6 +472,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     fontWeight: 'bold',
     overflow: 'hidden',
+    marginVertical: 5,
   },
 });
 
