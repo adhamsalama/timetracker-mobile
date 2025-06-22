@@ -17,6 +17,7 @@ interface TaskModalProps {
   mode: 'add' | 'edit';
   initialTask?: Task;
   onEditTask?: (id: string, name: string, estimatedMinutes: number, tags: string[]) => void;
+  onDeleteTask?: (id: string) => void;
 }
 
 const TaskModal: React.FC<TaskModalProps> = ({
@@ -150,6 +151,31 @@ const TaskModal: React.FC<TaskModalProps> = ({
               {mode === 'edit' ? 'Save' : 'Add'}
             </Text>
           </TouchableOpacity>
+          {mode === 'edit' && onDeleteTask && initialTask && (
+            <TouchableOpacity
+              onPress={() => {
+                // Confirm before deleting
+                // (You can use Alert if you want a confirmation dialog)
+                // For now, just call onDeleteTask
+                // If you want a confirmation, uncomment the Alert below
+                /*
+                Alert.alert(
+                  'Delete Task',
+                  `Are you sure you want to delete "${initialTask.name}"?`,
+                  [
+                    { text: 'Cancel', style: 'cancel' },
+                    { text: 'Delete', style: 'destructive', onPress: () => { onDeleteTask(initialTask.id); handleClose(); } },
+                  ]
+                );
+                */
+                onDeleteTask(initialTask.id);
+                handleClose();
+              }}
+              style={[styles.button, { backgroundColor: '#dc3545', marginTop: 10 }]}
+            >
+              <Text style={styles.buttonText}>Delete Task</Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity onPress={handleClose} style={styles.cancelButton}>
             <Text style={styles.cancelText}>Cancel</Text>
           </TouchableOpacity>
