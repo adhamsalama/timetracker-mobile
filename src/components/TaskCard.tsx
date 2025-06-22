@@ -32,18 +32,30 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, now, onToggle, onEdit, onDele
 
   return (
     <TouchableOpacity
-      onPress={() => onToggle(task.id)}
+      onPress={(e) => {
+        // Prevent toggling if the delete button was pressed
+        if ((e as any).deletePressed) return;
+        onToggle(task.id);
+      }}
       onLongPress={() => onEdit(task)}
       style={taskStyles}
+      activeOpacity={0.8}
     >
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Text style={{ fontWeight: 'bold' }}>{task.name}</Text>
         <TouchableOpacity
           onPress={e => {
+            // Mark the event so parent onPress knows not to toggle
+            (e as any).deletePressed = true;
             e.stopPropagation?.();
             onDelete(task);
           }}
           style={{ marginLeft: 8, padding: 4 }}
+          onPressOut={e => {
+            // Mark the event so parent onPress knows not to toggle
+            (e as any).deletePressed = true;
+            e.stopPropagation?.();
+          }}
         >
           <Text>❌</Text>
         </TouchableOpacity>
