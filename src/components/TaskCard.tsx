@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleProp, ViewStyle, View, ScrollView } from 'react-native';
+import { TouchableOpacity, Text, StyleProp, ViewStyle, View, ScrollView, ActionSheetIOS, Platform, Alert } from 'react-native';
 import { Task } from '../types';
 import { getDuration, isTaskActive, formatDuration } from '../utils/utils';
 import { styles } from '../styles';
@@ -30,35 +30,44 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, now, onToggle, onEdit, onDele
     taskStyles.push(styles.nonActiveTask);
   }
 
+  const handleLongPress = () => {
+    if (Platform.OS === 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: ['Cancel', 'Edit', 'Delete'],
+          destructiveButtonIndex: 2,
+          cancelButtonIndex: 0,
+        },
+        (buttonIndex) => {
+          if (buttonIndex === 1) {
+            onEdit(task);
+          } else if (buttonIndex === 2) {
+            onDelete(task);
+          }
+        }
+      );
+    } else {
+      Alert.alert(
+        task.name,
+        'Choose an action',
+        [
+          { text: 'Edit', onPress: () => onEdit(task) },
+          { text: 'Delete', style: 'destructive', onPress: () => onDelete(task) },
+          { text: 'Cancel', style: 'cancel' },
+        ]
+      );
+    }
+  };
+
   return (
     <TouchableOpacity
-      onPress={(e) => {
-        // Prevent toggling if the delete button was pressed
-        if ((e as any).deletePressed) return;
-        onToggle(task.id);
-      }}
-      onLongPress={() => onEdit(task)}
+      onPress={() => onToggle(task.id)}
+      onLongPress={handleLongPress}
       style={taskStyles}
       activeOpacity={0.8}
     >
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Text style={{ fontWeight: 'bold' }}>{task.name}</Text>
-        <TouchableOpacity
-          onPress={e => {
-            // Mark the event so parent onPress knows not to toggle
-            (e as any).deletePressed = true;
-            e.stopPropagation?.();
-            onDelete(task);
-          }}
-          style={{ marginLeft: 8, padding: 4 }}
-          onPressOut={e => {
-            // Mark the event so parent onPress knows not to toggle
-            (e as any).deletePressed = true;
-            e.stopPropagation?.();
-          }}
-        >
-          <Text>❌</Text>
-        </TouchableOpacity>
       </View>
       <Text>{formatDuration(durationMs)} / {task.estimatedMinutes} min</Text>
       <Text>{active ? 'Active' : 'Paused'}</Text>
