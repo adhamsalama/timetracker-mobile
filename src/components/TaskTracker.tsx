@@ -45,6 +45,7 @@ const TaskTracker: React.FC = () => {
   const [showControls, setShowControls] = useState(true);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [showIdle, setShowIdle] = useState(true);
 
   const {
     taskData,
@@ -163,6 +164,15 @@ const TaskTracker: React.FC = () => {
               </Text>
             </TouchableOpacity>
 
+            <TouchableOpacity
+              onPress={() => setShowIdle((prev) => !prev)}
+              style={styles.button}
+            >
+              <Text style={styles.buttonText}>
+                {showIdle ? "🙈 Hide Idle" : "👀 Show Idle"}
+              </Text>
+            </TouchableOpacity>
+
             <TouchableOpacity onPress={showDatepicker} style={styles.button}>
               <Text style={styles.buttonText}>📅 {selectedDate}</Text>
             </TouchableOpacity>
@@ -189,22 +199,26 @@ const TaskTracker: React.FC = () => {
           Total Active Time: {formatDuration(totalTrackedTime)}
         </Text>
 
-        <Text style={[styles.badge, styles.badgeWarning]}>
-          Total Idle Time: {formatDuration(totalIdleTime)}
-        </Text>
+        {showIdle && (
+          <Text style={[styles.badge, styles.badgeWarning]}>
+            Total Idle Time: {formatDuration(totalIdleTime)}
+          </Text>
+        )}
 
-        {filteredTasks.map(task => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            now={now}
-            onToggle={toggleTask}
-            onEdit={handleEditTask}
-            onDelete={handleDeleteTask}
-          />
+        {filteredTasks
+          .filter(task => showIdle || task.name.toLowerCase() !== 'idle')
+          .map(task => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              now={now}
+              onToggle={toggleTask}
+              onEdit={handleEditTask}
+              onDelete={handleDeleteTask}
+            />
         ))}
 
-        <Timeline entries={timeline} />
+        <Timeline entries={showIdle ? timeline : timeline.filter(entry => !entry.isIdle)} />
       </ScrollView>
 
       <TaskModal
