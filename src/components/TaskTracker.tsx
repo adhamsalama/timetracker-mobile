@@ -33,6 +33,7 @@ const TaskTracker: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [showControls, setShowControls] = useState(true);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   const {
     taskData,
@@ -42,6 +43,7 @@ const TaskTracker: React.FC = () => {
     addTask,
     toggleTask,
     clearDayTasks,
+    editTask, // <-- new function from useTaskLogic
   } = useTaskLogic(selectedDate);
 
   // Update current time every second
@@ -72,6 +74,22 @@ const TaskTracker: React.FC = () => {
         { text: 'Yes', style: 'destructive', onPress: clearDayTasks },
       ]
     );
+  };
+
+  const handleEditTask = (task: Task) => {
+    setEditingTask(task);
+    setModalVisible(true);
+  };
+
+  const handleModalClose = () => {
+    setModalVisible(false);
+    setEditingTask(null);
+  };
+
+  const handleEditTaskSubmit = (id: string, name: string, estimatedMinutes: number, tags: string[]) => {
+    editTask(id, name, estimatedMinutes, tags);
+    setModalVisible(false);
+    setEditingTask(null);
   };
 
   const filteredTasks = filterTasksByTag(tasks, selectedTag);
@@ -114,7 +132,7 @@ const TaskTracker: React.FC = () => {
         {showControls && (
           <>
             <TouchableOpacity
-              onPress={() => setModalVisible(true)}
+              onPress={() => { setModalVisible(true); setEditingTask(null); }}
               style={styles.button}
             >
               <Text style={styles.buttonText}>➕ Add Task</Text>
@@ -165,6 +183,7 @@ const TaskTracker: React.FC = () => {
             task={task}
             now={now}
             onToggle={toggleTask}
+            onEdit={handleEditTask}
           />
         ))}
 
@@ -173,8 +192,11 @@ const TaskTracker: React.FC = () => {
 
       <TaskModal
         visible={modalVisible}
-        onClose={() => setModalVisible(false)}
+        onClose={handleModalClose}
         onAddTask={addTask}
+        mode={editingTask ? "edit" : "add"}
+        initialTask={editingTask || undefined}
+        onEditTask={handleEditTaskSubmit}
       />
     </SafeAreaView>
   );
