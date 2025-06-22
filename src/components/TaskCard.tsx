@@ -31,15 +31,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, now, onToggle, onEdit, onDele
   }
 
   const handleLongPress = () => {
-    Alert.alert(
-      task.name,
-      'Choose an action',
-      [
-        { text: 'Edit', onPress: () => onEdit(task) },
-        { text: 'Delete', style: 'destructive', onPress: () => onDelete(task) },
-        { text: 'Cancel', style: 'cancel' },
-      ]
-    );
+    onEdit(task);
   };
 
   return (
