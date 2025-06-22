@@ -32,24 +32,11 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, now, onToggle, onEdit }) => {
   return (
     <TouchableOpacity
       onPress={() => onToggle(task.id)}
+      onLongPress={() => onEdit(task)}
       style={taskStyles}
     >
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Text style={{ fontWeight: 'bold' }}>{task.name}</Text>
-        <TouchableOpacity
-          onPress={(e) => {
-            e.stopPropagation?.();
-            onEdit(task);
-          }}
-          style={{
-            marginLeft: 10,
-            padding: 4,
-            borderRadius: 4,
-            backgroundColor: '#eee',
-          }}
-        >
-          <Text style={{ fontSize: 14, color: '#007bff' }}>Edit</Text>
-        </TouchableOpacity>
       </View>
       <Text>{formatDuration(durationMs)} / {task.estimatedMinutes} min</Text>
       <Text>{active ? 'Active' : 'Paused'}</Text>
