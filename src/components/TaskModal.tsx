@@ -27,6 +27,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
   mode,
   initialTask,
   onEditTask,
+  onDeleteTask,
 }) => {
   const [newTaskName, setNewTaskName] = useState('');
   const [estimatedMinutes, setEstimatedMinutes] = useState('');
@@ -154,20 +155,6 @@ const TaskModal: React.FC<TaskModalProps> = ({
           {mode === 'edit' && onDeleteTask && initialTask && (
             <TouchableOpacity
               onPress={() => {
-                // Confirm before deleting
-                // (You can use Alert if you want a confirmation dialog)
-                // For now, just call onDeleteTask
-                // If you want a confirmation, uncomment the Alert below
-                /*
-                Alert.alert(
-                  'Delete Task',
-                  `Are you sure you want to delete "${initialTask.name}"?`,
-                  [
-                    { text: 'Cancel', style: 'cancel' },
-                    { text: 'Delete', style: 'destructive', onPress: () => { onDeleteTask(initialTask.id); handleClose(); } },
-                  ]
-                );
-                */
                 onDeleteTask(initialTask.id);
                 handleClose();
               }}
