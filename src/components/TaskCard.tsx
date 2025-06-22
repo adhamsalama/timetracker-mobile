@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleProp, ViewStyle, View, ScrollView, ActionSheetIOS, Platform, Alert } from 'react-native';
+import { TouchableOpacity, Text, StyleProp, ViewStyle, View, ScrollView, Alert } from 'react-native';
 import { Task } from '../types';
 import { getDuration, isTaskActive, formatDuration } from '../utils/utils';
 import { styles } from '../styles';
@@ -31,32 +31,15 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, now, onToggle, onEdit, onDele
   }
 
   const handleLongPress = () => {
-    if (Platform.OS === 'ios') {
-      ActionSheetIOS.showActionSheetWithOptions(
-        {
-          options: ['Cancel', 'Edit', 'Delete'],
-          destructiveButtonIndex: 2,
-          cancelButtonIndex: 0,
-        },
-        (buttonIndex) => {
-          if (buttonIndex === 1) {
-            onEdit(task);
-          } else if (buttonIndex === 2) {
-            onDelete(task);
-          }
-        }
-      );
-    } else {
-      Alert.alert(
-        task.name,
-        'Choose an action',
-        [
-          { text: 'Edit', onPress: () => onEdit(task) },
-          { text: 'Delete', style: 'destructive', onPress: () => onDelete(task) },
-          { text: 'Cancel', style: 'cancel' },
-        ]
-      );
-    }
+    Alert.alert(
+      task.name,
+      'Choose an action',
+      [
+        { text: 'Edit', onPress: () => onEdit(task) },
+        { text: 'Delete', style: 'destructive', onPress: () => onDelete(task) },
+        { text: 'Cancel', style: 'cancel' },
+      ]
+    );
   };
 
   return (
