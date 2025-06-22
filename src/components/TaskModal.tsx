@@ -155,8 +155,6 @@ const TaskModal: React.FC<TaskModalProps> = ({
           {mode === 'edit' && onDeleteTask && initialTask && (
             <TouchableOpacity
               onPress={() => {
-                // Confirm before deleting
-                // You can use Alert for confirmation if desired
                 onDeleteTask(initialTask.id);
                 handleClose();
               }}

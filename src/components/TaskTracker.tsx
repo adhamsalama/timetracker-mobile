@@ -210,6 +210,19 @@ const TaskTracker: React.FC = () => {
         mode={editingTask ? "edit" : "add"}
         initialTask={editingTask || undefined}
         onEditTask={handleEditTaskSubmit}
+        onDeleteTask={(id: string) => {
+          const task = tasks.find(t => t.id === id);
+          if (task) {
+            Alert.alert(
+              'Delete Task',
+              `Are you sure you want to delete "${task.name}"?`,
+              [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Delete', style: 'destructive', onPress: () => deleteTask(id) },
+              ]
+            );
+          }
+        }}
       />
     </SafeAreaView>
   );
