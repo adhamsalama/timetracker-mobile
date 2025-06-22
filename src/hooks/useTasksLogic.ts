@@ -113,6 +113,17 @@ export const useTaskLogic = (selectedDate: string) => {
 
   const tasks = taskData[selectedDate]?.filter(t => t.id !== IDLE_TASK_ID) || [];
 
+  const deleteTask = (id: string) => {
+    setTaskData(prev => {
+      const dayTasks = prev[selectedDate] || [];
+      const updatedTasks = dayTasks.filter(task => task.id !== id);
+      return {
+        ...prev,
+        [selectedDate]: updatedTasks,
+      };
+    });
+  };
+
   return {
     taskData,
     tasks,
@@ -122,5 +133,6 @@ export const useTaskLogic = (selectedDate: string) => {
     toggleTask,
     clearDayTasks,
     editTask,
+    deleteTask,
   };
 };
