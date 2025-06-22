@@ -27,6 +27,17 @@ import Timeline from './Timeline';
 import TagFilter from './TagsFilter';
 import { DailyTasks, Task } from '../types';
 
+function confirmDeleteTask(taskName: string, onConfirm: () => void) {
+  Alert.alert(
+    'Delete Task',
+    `Are you sure you want to delete "${taskName}"?`,
+    [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Delete', style: 'destructive', onPress: onConfirm },
+    ]
+  );
+}
+
 const TaskTracker: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(getTodayDate());
   const [now, setNow] = useState(Date.now());
@@ -83,14 +94,7 @@ const TaskTracker: React.FC = () => {
   };
 
   const handleDeleteTask = (task: Task) => {
-    Alert.alert(
-      'Delete Task',
-      `Are you sure you want to delete "${task.name}"?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Delete', style: 'destructive', onPress: () => deleteTask(task.id) },
-      ]
-    );
+    confirmDeleteTask(task.name, () => deleteTask(task.id));
   };
 
   const handleModalClose = () => {
@@ -213,14 +217,7 @@ const TaskTracker: React.FC = () => {
         onDeleteTask={(id: string) => {
           const task = tasks.find(t => t.id === id);
           if (task) {
-            Alert.alert(
-              'Delete Task',
-              `Are you sure you want to delete "${task.name}"?`,
-              [
-                { text: 'Cancel', style: 'cancel' },
-                { text: 'Delete', style: 'destructive', onPress: () => deleteTask(id) },
-              ]
-            );
+            confirmDeleteTask(task.name, () => deleteTask(id));
           }
         }}
       />
