@@ -96,6 +96,21 @@ export const useTaskLogic = (selectedDate: string) => {
     }));
   };
 
+  const editTask = (id: string, name: string, estimatedMinutes: number, tags: string[]) => {
+    setTaskData(prev => {
+      const dayTasks = prev[selectedDate] || [];
+      const updatedTasks = dayTasks.map(task =>
+        task.id === id
+          ? { ...task, name, estimatedMinutes, tags }
+          : task
+      );
+      return {
+        ...prev,
+        [selectedDate]: updatedTasks,
+      };
+    });
+  };
+
   const tasks = taskData[selectedDate]?.filter(t => t.id !== IDLE_TASK_ID) || [];
 
   return {
@@ -106,5 +121,6 @@ export const useTaskLogic = (selectedDate: string) => {
     addTask,
     toggleTask,
     clearDayTasks,
+    editTask,
   };
 };

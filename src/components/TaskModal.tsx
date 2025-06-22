@@ -8,23 +8,53 @@ import {
   ScrollView,
 } from 'react-native';
 import { styles } from '../styles';
+import { Task } from '../types';
 
 interface TaskModalProps {
   visible: boolean;
   onClose: () => void;
   onAddTask: (name: string, estimatedMinutes: number, tags: string[]) => void;
+  mode: 'add' | 'edit';
+  initialTask?: Task;
+  onEditTask?: (id: string, name: string, estimatedMinutes: number, tags: string[]) => void;
 }
 
-const TaskModal: React.FC<TaskModalProps> = ({ visible, onClose, onAddTask }) => {
+const TaskModal: React.FC<TaskModalProps> = ({
+  visible,
+  onClose,
+  onAddTask,
+  mode,
+  initialTask,
+  onEditTask,
+}) => {
   const [newTaskName, setNewTaskName] = useState('');
   const [estimatedMinutes, setEstimatedMinutes] = useState('');
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>([]);
 
-  const handleAddTask = () => {
+  // Pre-fill form fields in edit mode
+  React.useEffect(() => {
+    if (visible && mode === 'edit' && initialTask) {
+      setNewTaskName(initialTask.name);
+      setEstimatedMinutes(initialTask.estimatedMinutes.toString());
+      setTags(initialTask.tags || []);
+      setTagInput('');
+    } else if (visible && mode === 'add') {
+      setNewTaskName('');
+      setEstimatedMinutes('');
+      setTags([]);
+      setTagInput('');
+    }
+  }, [visible, mode, initialTask]);
+
+  const handleSubmit = () => {
     if (!newTaskName || !estimatedMinutes) return;
 
-    onAddTask(newTaskName, Number(estimatedMinutes), tags);
+    if (mode === 'edit' && onEditTask && initialTask) {
+      onEditTask(initialTask.id, newTaskName, Number(estimatedMinutes), tags);
+    } else {
+      onAddTask(newTaskName, Number(estimatedMinutes), tags);
+    }
     setNewTaskName('');
     setEstimatedMinutes('');
     setTagInput('');
@@ -55,7 +85,9 @@ const TaskModal: React.FC<TaskModalProps> = ({ visible, onClose, onAddTask }) =>
     <Modal visible={visible} transparent animationType="slide">
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>New Task</Text>
+          <Text style={styles.modalTitle}>
+            {mode === 'edit' ? 'Edit Task' : 'New Task'}
+          </Text>
           <TextInput
             placeholder="Task name"
             placeholderTextColor={'#888'}
@@ -113,8 +145,10 @@ const TaskModal: React.FC<TaskModalProps> = ({ visible, onClose, onAddTask }) =>
             </View>
           </ScrollView>
 
-          <TouchableOpacity onPress={handleAddTask} style={styles.button}>
-            <Text style={styles.buttonText}>Add</Text>
+          <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+            <Text style={styles.buttonText}>
+              {mode === 'edit' ? 'Save' : 'Add'}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleClose} style={styles.cancelButton}>
             <Text style={styles.cancelText}>Cancel</Text>
