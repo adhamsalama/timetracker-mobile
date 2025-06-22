@@ -44,6 +44,7 @@ const TaskTracker: React.FC = () => {
     toggleTask,
     clearDayTasks,
     editTask, // <-- new function from useTaskLogic
+    deleteTask, // <-- new function from useTaskLogic
   } = useTaskLogic(selectedDate);
 
   // Update current time every second
@@ -79,6 +80,17 @@ const TaskTracker: React.FC = () => {
   const handleEditTask = (task: Task) => {
     setEditingTask(task);
     setModalVisible(true);
+  };
+
+  const handleDeleteTask = (task: Task) => {
+    Alert.alert(
+      'Delete Task',
+      `Are you sure you want to delete "${task.name}"?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Delete', style: 'destructive', onPress: () => deleteTask(task.id) },
+      ]
+    );
   };
 
   const handleModalClose = () => {
@@ -184,6 +196,7 @@ const TaskTracker: React.FC = () => {
             now={now}
             onToggle={toggleTask}
             onEdit={handleEditTask}
+            onDelete={handleDeleteTask}
           />
         ))}
 

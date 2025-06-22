@@ -9,9 +9,10 @@ interface TaskCardProps {
   now: number;
   onToggle: (taskId: string) => void;
   onEdit: (task: Task) => void;
+  onDelete: (task: Task) => void;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, now, onToggle, onEdit }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, now, onToggle, onEdit, onDelete }) => {
   const active = isTaskActive(task);
   const durationMs = getDuration(task.intervals, now);
   const durationMin = durationMs / 60000;
@@ -37,6 +38,15 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, now, onToggle, onEdit }) => {
     >
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Text style={{ fontWeight: 'bold' }}>{task.name}</Text>
+        <TouchableOpacity
+          onPress={e => {
+            e.stopPropagation?.();
+            onDelete(task);
+          }}
+          style={{ marginLeft: 8, padding: 4 }}
+        >
+          <Text>❌</Text>
+        </TouchableOpacity>
       </View>
       <Text>{formatDuration(durationMs)} / {task.estimatedMinutes} min</Text>
       <Text>{active ? 'Active' : 'Paused'}</Text>
