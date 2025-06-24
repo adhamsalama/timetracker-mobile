@@ -47,6 +47,7 @@ const TaskTracker: React.FC = () => {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [showIdle, setShowIdle] = useState(true);
 
+
   const {
     taskData,
     tasks,
@@ -55,8 +56,8 @@ const TaskTracker: React.FC = () => {
     addTask,
     toggleTask,
     clearDayTasks,
-    editTask, // <-- new function from useTaskLogic
-    deleteTask, // <-- new function from useTaskLogic
+    editTask,
+    deleteTask,
   } = useTaskLogic(selectedDate);
 
   // Update current time every second
@@ -216,7 +217,9 @@ const TaskTracker: React.FC = () => {
               onEdit={handleEditTask}
               onDelete={handleDeleteTask}
             />
-        ))}
+          ))}
+
+        <View style={{ height: 1, backgroundColor: '#ccc', marginVertical: 16 }} />
 
         <Timeline entries={showIdle ? timeline : timeline.filter(entry => !entry.isIdle)} />
       </ScrollView>
